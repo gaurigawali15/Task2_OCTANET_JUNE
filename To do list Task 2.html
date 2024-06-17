@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>To-Do List</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			max-width: 600px;
+			margin: 0 auto;
+		}
+		
+		#logo {
+			width: 200px;
+			height: 200px;
+			margin: 20px auto;
+			display: block;
+		}
+		
+		#new-todo {
+			width: 80%;
+		}
+		
+		#todo-list {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+		
+		.todo-item {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background-color: #f9f9f9;
+			padding: 10px;
+			margin-bottom: 5px;
+			border-radius: 5px;
+		}
+		
+		.complete {
+			text-decoration: line-through;
+		}
+	</style>
+</head>
+<body>
+	<img id="logo" src="https://i.im.ge/2024/06/15/KKAL59.IMG-5863.png" alt="To-Do List Logo">
+	<h1>To-Do List</h1>
+	<form id="todo-form">
+		<input type="text" id="new-todo" placeholder="Add a new item...">
+		<button type="submit">Add</button>
+	</form>
+	<ul id="todo-list"></ul>
+	
+	<script>
+		const form = document.getElementById('todo-form');
+		const newTodo = document.getElementById('new-todo');
+		const todoList = document.getElementById('todo-list');
+		
+		let todos = [];
+		
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			if (newTodo.value.trim()) {
+				const todo = {
+					id: Date.now(),
+					text: newTodo.value.trim(),
+					complete: false
+				};
+				todos.push(todo);
+				newTodo.value = '';
+				populateList();
+			}
+		});
+		
+		function populateList() {
+			todoList.innerHTML = '';
+			todos.forEach(todo => {
+				const li = document.createElement('li');
+				li.classList.add('todo-item');
+				const span = document.createElement('span');
+				span.textContent = todo.text;
+				if (todo.complete) {
+					span.classList.add('complete');
+				}
+				li.appendChild(span);
+				const checkbox = document.createElement('input');
+				checkbox.type = 'checkbox';
+				checkbox.checked = todo.complete;
+				checkbox.addEventListener('change', () => {
+					todo.complete = checkbox.checked;
+					populateList();
+				});
+				li.appendChild(checkbox);
+				const removeButton = document.createElement('button');
+				removeButton.textContent = 'Remove';
+				removeButton.addEventListener('click', () => {
+					todos = todos.filter(t => t.id !== todo.id);
+					populateList();
+				});
+				li.appendChild(removeButton);
+				todoList.appendChild(li);
+			});
+		}
+	</script>
+</body>
+</html>
+
